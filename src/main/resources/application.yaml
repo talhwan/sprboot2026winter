@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: demo
+    birth: 20251229
+
