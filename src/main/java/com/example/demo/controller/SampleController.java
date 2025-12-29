@@ -75,12 +75,17 @@ public class SampleController {
         for(String each : aaaList){
             System.out.println(each);
         }
-
-
-
-
-
         return "Hello World";
     }
+
+    /* 과제1
+
+    1) 스프링 전체 구조 복습
+
+    2) 구구단 출력
+    //assignment1 이라는 메서드를 만들고, url은 /assignment 로 지정
+    //구구단을 1단부터 9단까지 출력하고, 리턴값은 '완료' 라는 한글을 담아주세요!
+
+     */
 
 }
