@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>인덱스!!</title>
+</head>
+<body>
+
+<div id="div_title">-</div>
+
+인덱스 페이지 보여주세요!
+
+<button onclick="listener_api_test()">api test</button>
+<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script>
+
+    function listener_api_test(){
+        $.ajax({
+            url: '/api/test',
+            method: 'GET',
+            data : {},
+            success: function (data, status, xhr) {
+                alert("success : " + JSON.stringify(data));
+                let keyName = "test1";
+                alert("test1 : " + data[keyName]);
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+    }
+
+    let div_title = document.getElementById("div_title").innerHTML;
+    //alert(div_title);
+    let div_title_jq = $("#div_title").html();
+    //alert(div_title_jq);
+</script>
+</body>
+</html>

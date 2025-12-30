@@ -14,7 +14,7 @@ public class SampleController {
 
     @ResponseBody
     @RequestMapping("/test")
-    public String test(){
+    public Map<String, Object> test(){
 
         //변수 선언
         int int_a0 = 0;//정수
@@ -75,7 +75,7 @@ public class SampleController {
         for(String each : aaaList){
             System.out.println(each);
         }
-        return "Hello World";
+        return a_map;
     }
 
     /* 과제1
