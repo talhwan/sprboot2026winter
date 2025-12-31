@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.controller.page;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,10 +9,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class DefaultController {
 
+    // 1. 요청한 url을 리다이랙트로 보내기
+    @RequestMapping({"", "/"})
+    public String empty() {
+        return "index";
+    }
+    @RequestMapping("/index")
+    public String empty2() {
+        return "redirect:/";
+    }
+
+
+    /*
+    // 1. 요청한 url이 변하지 않음.
+    @RequestMapping({"", "/", "/index"})
+    public String empty() {
+        return "index";
+    }
+
+    // 이전
     @RequestMapping("/index")
     public String index() {
         return "index";
     }
+    */
+
+
+
     @RequestMapping("/add")
     public String add(int a, int b, Model model) {
         System.out.println("a : " + a);

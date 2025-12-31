@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>detail</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+detail
+
+    <div>
+        id : <span id="text_id"></span> <br />
+        createdAt : <span id="text_createdAt">-</span> <br />
+        title : <input id="input_title" /> <br />
+        content : <input id="input_content" /> <br />
+        author : <span id="text_author">-</span> <br />
+    </div>
+
+<!--<button onclick="detail_board()">조회!</button>-->
+<button onclick="update_board()">수정!</button>
+<script>
+    let tempHref = location.href; //http://localhost:8080/board/detail/1?a=2
+    let arrayHref = tempHref.split("/");
+    let tempId = arrayHref[arrayHref.length - 1];
+    //alert(tempId); //1?a=2
+
+    arrayHref = tempId.split("?");
+    if(arrayHref.length > 1){
+        tempId = arrayHref[0];
+    }
+    //alert(tempId);
+
+    $(function(){
+        detail_board();
+    });
+
+    function update_board(){
+        $.ajax({
+            url: '/api/board/update',
+            method: 'GET',
+            data : {
+                id : $("#input_id").val()
+                , title : $("#input_title").val()
+                , content : $("#input_content").val()
+            },
+            success: function (data, status, xhr) {
+                alert("success : " + JSON.stringify(data));
+                let result_code = data["result_code"];
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+
+    }
+    function detail_board(){
+        $.ajax({
+            url: '/api/board/detail/' + tempId,
+            method: 'GET',
+            data : {},
+            success: function (data, status, xhr) {
+                alert("success : " + JSON.stringify(data));
+                let board = data["data"];
+                $("#input_title").val(board["title"]);
+                $("#input_content").val(board["content"]);
+                $("#text_id").html(board["id"]);
+                $("#text_author").html(board["author"]);
+                $("#text_createdAt").html(board["createdAt"]);
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+
+    }
+</script>
+</body>
+</html>
