@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>create</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+POSTING CREATE <br />
+title : <input class="input_param" id="input_title" name="title" /> <br />
+content : <input class="input_param" id="input_content" name="content"/> <br />
+author : <input class="input_param" id="input_author" name="author" /> <br />
+<button onclick="create_posting()">CREATE</button>
+
+<script>
+    function create_posting(){
+        let _param = {};
+        let input_param = $(".input_param");
+        for(let each of input_param){
+            let tempName = $(each).attr("name");
+            _param[tempName] = $(each).val();
+        }
+
+        $.ajax({
+            url: '/api/posting/create',
+            method: 'GET',
+            data : _param,
+            success: function (data, status, xhr) {
+                let result_status = data["status"];
+                alert("success : " + JSON.stringify(data));
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
