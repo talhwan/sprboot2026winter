@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+
+LIST <br />
+<div id="div_list"></div>
+
+<script>
+    list_posting();
+    function list_posting(){
+        $.ajax({
+            url: '/api/posting/list',
+            method: 'GET',
+            data : {},
+            success: function (data, status, xhr) {
+                let result_status = data["status"];
+                alert("success : " + JSON.stringify(data));
+                let tempList = data["data"];
+                for(let each of tempList){
+                    $("#div_list").append(
+                      `<div onclick="location.href = '/posting/detail/${each["id"]}'">${each["id"]} : ${each["title"]}</div>`
+                    );
+                }
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+    }
+</script>
+</body>
+</html>

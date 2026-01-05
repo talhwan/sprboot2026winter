@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>detail</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+POSTING DETAIL <br />
+id : <input class="input_param" id="input_id" name="id" readonly /> <br />
+createdAt : <input class="input_param" id="input_createdAt" name="createdAt" readonly /> <br />
+title : <input class="input_param" id="input_title" name="title" /> <br />
+content : <input class="input_param" id="input_content" name="content"/> <br />
+author : <input class="input_param" id="input_author" name="author" /> <br />
+<button onclick="detail_posting()">DETAIL</button>
+<button onclick="update_posting()">UPDATE</button>
+<button onclick="delete_posting()">DELETE</button>
+
+<script>
+
+    let tempHref = location.href + "";
+    let arrayHref = tempHref.split("/");
+    let tempId = arrayHref[arrayHref.length - 1];
+    if(tempId.includes("?")){
+        arrayHref = tempId.split("?");
+        tempId = arrayHref[0];
+    }
+
+    function detail_posting(){
+        $.ajax({
+            url: '/api/posting/detail',
+            method: 'GET',
+            data : {
+                id : tempId
+            },
+            success: function (data, status, xhr) {
+                let result_status = data["status"];
+                alert("success : " + JSON.stringify(data));
+                let posting = data["data"];
+
+                let input_param = $(".input_param");
+                for(let each of input_param){
+                    let tempName = $(each).attr("name");
+                    $(each).val(posting[tempName]);
+                }
+
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+    }
+    function delete_posting(){
+        $.ajax({
+            url: '/api/posting/delete',
+            method: 'GET',
+            data : {
+                id : tempId
+            },
+            success: function (data, status, xhr) {
+                let result_status = data["status"];
+                alert("success : " + JSON.stringify(data));
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+    }
+    function update_posting(){
+        let _param = {};
+        let input_param = $(".input_param");
+        for(let each of input_param){
+            let tempName = $(each).attr("name");
+            if(tempName + "" !== "createdAt"){
+                _param[tempName] = $(each).val();
+            }
+        }
+
+        $.ajax({
+            url: '/api/posting/update',
+            method: 'GET',
+            data : _param,
+            success: function (data, status, xhr) {
+                let result_status = data["status"];
+                alert("success : " + JSON.stringify(data));
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
