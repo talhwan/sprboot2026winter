@@ -18,6 +18,7 @@ detail
 
 <!--<button onclick="detail_board()">조회!</button>-->
 <button onclick="update_board()">수정!</button>
+<button onclick="delete_board()">삭제!</button>
 <script>
     let tempHref = location.href; //http://localhost:8080/board/detail/1?a=2
     let arrayHref = tempHref.split("/");
@@ -39,9 +40,28 @@ detail
             url: '/api/board/update',
             method: 'GET',
             data : {
-                id : $("#input_id").val()
+                id : tempId
                 , title : $("#input_title").val()
                 , content : $("#input_content").val()
+            },
+            success: function (data, status, xhr) {
+                alert("success : " + JSON.stringify(data));
+                let result_code = data["result_code"];
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+
+    }
+    function delete_board(){
+        $.ajax({
+            url: '/api/board/delete',
+            method: 'GET',
+            data : {
+                id : tempId
             },
             success: function (data, status, xhr) {
                 alert("success : " + JSON.stringify(data));

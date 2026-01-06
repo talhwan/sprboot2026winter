@@ -1,0 +1,106 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.service.BoardService;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Service
+public class BoardServiceImpl implements BoardService {
+
+    //임시로 저장할 게시판 정보
+    List<Map<String, Object>> list = new ArrayList<>();
+    int sequence = 0;
+
+    @Override
+    public Map<String, Object> create(Map<String, Object> params) {
+
+        String title = (String) params.get("title");
+        String content = (String) params.get("content");
+        String author = (String) params.get("author");
+
+        //아이디값 줘볼까?
+        params.put("id", ++sequence);
+        LocalDateTime now = LocalDateTime.now();
+        params.put("createdAt", now.toString());
+
+
+        list.add(params);
+        //System.out.println("title: " + title);
+        System.out.println("list : " + list.toString());
+
+        Map<String, Object> map_result = new HashMap<>();
+        map_result.put("result_code", 200);
+
+        return map_result;
+    }
+    @Override
+    public void update(Map<String, Object> params) {
+        String id = params.get("id") + "";
+        System.out.println("id : " + id);
+
+        Map<String, Object> map_board = null;
+        for(Map<String, Object> each : list){
+            String tempId = each.get("id") + "";
+            if(tempId.equals(id)){
+                map_board = each;
+            }
+        }
+        System.out.println("map_board : " + map_board);
+        if(map_board != null){
+            String title = (String) params.get("title");
+            if(title != null){
+                map_board.put("title", title);
+            }
+            String content = (String) params.get("content");
+            if(content != null){
+                map_board.put("content", content);
+            }
+        }
+    }
+    @Override
+    public void delete(int id) {
+        Map<String, Object> map_board = null;
+        for(Map<String, Object> each : list){
+            String tempId = each.get("id") + "";
+            if(tempId.equals(id + "")){
+                map_board = each;
+            }
+        }
+        if(map_board != null){
+            map_board.put("title", null);
+            map_board.put("content", null);
+            map_board.put("author", null);
+        }
+    }
+    @Override
+    public Map<String, Object> detail(int id) {
+        System.out.println("id : " + id);
+
+        Map<String, Object> map_board = null;
+        for(Map<String, Object> each : list){
+            String tempId = each.get("id") + "";
+            if(tempId.equals(id + "")){
+                map_board = each;
+            }
+        }
+
+        Map<String, Object> map_result = new HashMap<>();
+        map_result.put("result_code", 200);
+        map_result.put("data", map_board);
+
+        return map_result;
+    }
+    @Override
+    public Map<String, Object> list() {
+        Map<String, Object> map_result = new HashMap<>();
+        map_result.put("result_code", 200);
+        map_result.put("data", list);
+
+        return map_result;
+    }
+}

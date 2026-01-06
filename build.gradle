@@ -24,6 +24,20 @@ dependencies {
     //thymeleaf 기능 추가!
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
+    /* lombok */
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    /* jpa */
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    /* db */
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    //implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.2.0'
+
+    /* mybatis */
+    // implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' //3.0.2 => 3.0.3으로 상승!!
+
+
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
