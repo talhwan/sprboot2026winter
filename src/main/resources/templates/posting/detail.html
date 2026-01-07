@@ -28,7 +28,7 @@ author : <input class="input_param" id="input_author" name="author" /> <br />
 
     function detail_posting(){
         $.ajax({
-            url: '/api/posting/detail',
+            url: '/api/posting',
             method: 'GET',
             data : {
                 id : tempId
@@ -54,11 +54,12 @@ author : <input class="input_param" id="input_author" name="author" /> <br />
     }
     function delete_posting(){
         $.ajax({
-            url: '/api/posting/delete',
-            method: 'GET',
-            data : {
+            url: '/api/posting',
+            method: 'DELETE',
+            contentType : 'application/json; charset=utf-8',
+            data : JSON.stringify({
                 id : tempId
-            },
+            }),
             success: function (data, status, xhr) {
                 let result_status = data["status"];
                 alert("success : " + JSON.stringify(data));
@@ -81,9 +82,10 @@ author : <input class="input_param" id="input_author" name="author" /> <br />
         }
 
         $.ajax({
-            url: '/api/posting/update',
-            method: 'GET',
-            data : _param,
+            url: '/api/posting',
+            method: 'PUT',
+            contentType : 'application/json; charset=utf-8',
+            data : JSON.stringify(_param),
             success: function (data, status, xhr) {
                 let result_status = data["status"];
                 alert("success : " + JSON.stringify(data));
