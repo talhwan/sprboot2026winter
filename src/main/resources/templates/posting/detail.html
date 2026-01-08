@@ -7,6 +7,7 @@
 </head>
 <body>
 POSTING DETAIL <br />
+deleted : <input class="input_param" id="input_deleted" name="deleted" readonly /> <br />
 id : <input class="input_param" id="input_id" name="id" readonly /> <br />
 createdAt : <input class="input_param" id="input_createdAt" name="createdAt" readonly /> <br />
 title : <input class="input_param" id="input_title" name="title" /> <br />
@@ -34,9 +35,9 @@ author : <input class="input_param" id="input_author" name="author" /> <br />
                 id : tempId
             },
             success: function (data, status, xhr) {
-                let result_status = data["status"];
+                //let result_status = data["status"];
                 alert("success : " + JSON.stringify(data));
-                let posting = data["data"];
+                let posting = data;
 
                 let input_param = $(".input_param");
                 for(let each of input_param){

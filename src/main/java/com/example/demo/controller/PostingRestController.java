@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.DefaultDto;
+import com.example.demo.dto.PostingDto;
 import com.example.demo.service.PostingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -15,24 +18,26 @@ public class PostingRestController {
     final PostingService postingService;
 
     @PostMapping("")
-    public Map<String, Object> create(@RequestBody Map<String, Object> map) {
-        return postingService.create(map);
+    public ResponseEntity<DefaultDto.CreateResDto> create(@RequestBody PostingDto.CreateReqDto param) {
+        return ResponseEntity.ok(postingService.create(param));
     }
     @PutMapping("")
-    public void update(@RequestBody Map<String, Object> map) {
-        postingService.update(map);
+    public ResponseEntity<Void> update(@RequestBody PostingDto.UpdateReqDto param) {
+        postingService.update(param);
+        return ResponseEntity.ok().build();
     }
     @DeleteMapping("")
-    public void delete(@RequestBody Long id) {
-        postingService.delete(id);
+    public ResponseEntity<Void> delete(@RequestBody PostingDto.UpdateReqDto param) {
+        postingService.delete(param);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("")
-    public Map<String, Object> detail(@RequestParam Long id) {
-        return postingService.detail(id);
+    public ResponseEntity<PostingDto.DetailResDto> detail(DefaultDto.DetailReqDto param) {
+        return ResponseEntity.ok(postingService.detail(param));
     }
     @GetMapping("/list")
-    public Map<String, Object> list() {
-        return postingService.list();
+    public ResponseEntity<List<PostingDto.DetailResDto>> list() {
+        return ResponseEntity.ok(postingService.list());
     }
 }
