@@ -3,8 +3,6 @@ package com.example.demo.domain;
 import com.example.demo.dto.DefaultDto;
 import com.example.demo.dto.UserDto;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,7 +20,8 @@ public class User extends AuditingFields {
     Integer gender;// 10은 여성, 20은 남성
 
     protected User() {}
-    private User(String username, String password, String name, String nickname, String phone, String birth, Integer gender) {
+    private User(Boolean deleted, String username, String password, String name, String nickname, String phone, String birth, Integer gender) {
+        this.deleted = deleted;
         this.username = username;
         this.password = password;
         this.name = name;
@@ -33,7 +32,7 @@ public class User extends AuditingFields {
     }
 
     public static User of(String username, String password, String name, String nickname, String phone, String birth, Integer gender){
-        return new User(username, password, name, nickname, phone, birth, gender);
+        return new User(false ,username, password, name, nickname, phone, birth, gender);
     }
 
     public DefaultDto.CreateResDto toCreateResDto(){
@@ -42,6 +41,7 @@ public class User extends AuditingFields {
         return DefaultDto.CreateResDto.builder().id(getId()).build();
     }
     public void update(UserDto.UpdateReqDto param){
+        if(param.getDeleted() != null){ setDeleted(param.getDeleted()); }
         if(param.getPassword() != null) { setPassword(param.getPassword()); }
         if(param.getName() != null) { setName(param.getName()); }
         if(param.getNickname() != null) { setNickname(param.getNickname()); }

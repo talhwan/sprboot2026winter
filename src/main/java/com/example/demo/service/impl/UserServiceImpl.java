@@ -19,11 +19,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public DefaultDto.CreateResDto create(UserDto.CreateReqDto param) {
-        /*
-        User user = param.toEntity();
-        user = userRepository.save(user);
-        DefaultDto.CreateResDto res = user.toCreateResDto();
-        */
         return userRepository.save(param.toEntity()).toCreateResDto();
     }
     @Override
@@ -40,8 +35,12 @@ public class UserServiceImpl implements UserService {
 
     public UserDto.DetailResDto get(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("no data"));
-        UserDto.DetailResDto res = UserDto.DetailResDto.builder()
+        return UserDto.DetailResDto.builder()
                 .id(user.getId())
+                .deleted(user.getDeleted())
+                .createdAt(user.getCreatedAt())
+                .modifiedAt(user.getModifiedAt())
+
                 .username(user.getUsername())
                 .name(user.getName())
                 .nickname(user.getNickname())
@@ -49,7 +48,6 @@ public class UserServiceImpl implements UserService {
                 .birth(user.getBirth())
                 .gender(user.getGender())
                 .build();
-        return res;
     }
 
     @Override
