@@ -9,9 +9,9 @@ import java.util.Map;
 
 @Service
 public interface PostingService {
-    public DefaultDto.CreateResDto create(PostingDto.CreateReqDto param);
-    public void update(PostingDto.UpdateReqDto param);
-    public void delete(PostingDto.UpdateReqDto param);
-    public PostingDto.DetailResDto detail(DefaultDto.DetailReqDto param);
-    public List<PostingDto.DetailResDto> list();
+    DefaultDto.CreateResDto create(PostingDto.CreateReqDto param);
+    void update(PostingDto.UpdateReqDto param);
+    void delete(PostingDto.UpdateReqDto param);
+    PostingDto.DetailResDto detail(DefaultDto.DetailReqDto param);
+    List<PostingDto.DetailResDto> list();
 }

@@ -3,15 +3,13 @@ package com.example.demo.service.impl;
 import com.example.demo.domain.Posting;
 import com.example.demo.dto.DefaultDto;
 import com.example.demo.dto.PostingDto;
-import com.example.demo.repositody.PostingRepository;
+import com.example.demo.repository.PostingRepository;
 import com.example.demo.service.PostingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
