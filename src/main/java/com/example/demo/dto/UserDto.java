@@ -8,6 +8,15 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 public class UserDto {
+
+    @Getter @Setter
+    public static class LoginReqDto {
+        String username;
+        String password;
+    }
+
+    /**/
+
     @Getter
     @Setter
     public static class CreateReqDto {

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>create</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+USER SIGNUP<br />
+username : <input type="text" class="input_param" id="input_username" name="username" /> <br />
+password : <input type="password" class="input_param" id="input_password" name="password"/> <br />
+name : <input type="text" class="input_param" id="input_name" name="name" /> <br />
+nickname : <input type="text" class="input_param" id="input_nickname" name="nickname" /> <br />
+phone : <input type="text" class="input_param" id="input_phone" name="phone" /> <br />
+birth : <input type="date" class="input_param" id="input_birth" name="birth" /> <br />
+gender :
+<select class="input_param" id="input_gender" name="gender">
+    <option value="10">여성</option>
+    <option value="20">남성</option>
+</select>
+<br />
+<button onclick="create_user()">CREATE</button>
+
+<script>
+    function create_user(){
+        let _param = {};
+        let input_param = $(".input_param");
+        for(let each of input_param){
+            let tempName = $(each).attr("name");
+            _param[tempName] = $(each).val();
+        }
+
+        $.ajax({
+            url: '/api/user',
+            method: 'POST',
+            contentType : 'application/json; charset=utf-8',
+            data : JSON.stringify(_param),
+            success: function (data, status, xhr) {
+                if(data["id"] + "" === "-100"){
+                    alert("이미 사용중인 아이디 입니다!");
+                } else {
+                    alert("회원가입 완료!");
+                    location.href = "/user/login";
+                }
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>인덱스!!</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 </head>
 <body>
 
@@ -12,7 +13,15 @@
 
 <button onclick="listener_api_test()">api test</button>
 <button onclick="listener_api_test2()">api test2</button>
-<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+<script>
+    let myUserId = localStorage.getItem("myUserId");
+    //alert(myUserId);
+    if(myUserId == null || myUserId + "" === "" || myUserId + "" === "undefined"){
+        alert("not logged in");
+    } else {
+        alert("your user id is " + myUserId);
+    }
+</script>
 <script>
 
     function listener_api_test(){

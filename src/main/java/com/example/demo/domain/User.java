@@ -2,6 +2,7 @@ package com.example.demo.domain;
 
 import com.example.demo.dto.DefaultDto;
 import com.example.demo.dto.UserDto;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,8 +11,8 @@ import lombok.Setter;
 @Setter
 @Entity
 public class User extends AuditingFields {
-    String username; // 일반적인 아이디라고 보시면 됩니다!
-    String password; // 비밀번호!
+    @Column(unique = true, nullable = false) String username; // 사용자 ID!! UQ, not null!
+    @Column(nullable = false) String password;
 
     String name;
     String nickname;

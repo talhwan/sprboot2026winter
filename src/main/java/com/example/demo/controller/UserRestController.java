@@ -15,6 +15,11 @@ import java.util.List;
 public class UserRestController {
     final UserService userService;
 
+    @PostMapping("/login")
+    public ResponseEntity<DefaultDto.CreateResDto> login(@RequestBody UserDto.LoginReqDto param) {
+        return ResponseEntity.ok(userService.login(param));
+    }
+    /**/
     @PostMapping("")
     public ResponseEntity<DefaultDto.CreateResDto> create(@RequestBody UserDto.CreateReqDto param) {
         return ResponseEntity.ok(userService.create(param));
