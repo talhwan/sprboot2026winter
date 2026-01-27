@@ -125,4 +125,47 @@ public class UserServiceImpl implements UserService {
         List<UserDto.DetailResDto> res = userMapper.list();
         return res;
     }
+
+    @Override
+    public UserDto.PagedListResDto pagedList(UserDto.PagedListReqDto param) {
+        int totalcount = userMapper.listCount();
+        Integer perpage = param.getPerpage();
+        if(perpage == null || perpage <= 0){
+            perpage = 10;
+        }
+
+        int totalpage = totalcount / perpage;
+        if(totalcount % perpage > 0) {totalpage++;}
+
+        Integer callpage = param.getCallpage();
+        if(callpage == null || callpage <= 0){
+            callpage = 1;
+        }
+        if(callpage > totalpage){
+            callpage = totalpage;
+        }
+
+        int offset = (callpage - 1) * perpage;
+        param.setPerpage(perpage);
+        param.setOffset(offset);
+
+        if(param.getOrderby() == null || param.getOrderby().isEmpty()){
+            param.setOrderby("id");
+        }
+        if(param.getOrderway() == null || param.getOrderway().isEmpty()){
+            param.setOrderway("DESC");
+        }
+        System.out.println(param.getOrderby());
+        System.out.println(param.getOrderway());
+
+        List<UserDto.DetailResDto> list = userMapper.pagedList(param);
+
+        return UserDto.PagedListResDto.builder()
+                .callpage(callpage)
+                .perpage(perpage)
+                .totalpage(totalpage)
+                .totalcount(totalcount)
+                .list(list)
+                .build();
+    }
 }

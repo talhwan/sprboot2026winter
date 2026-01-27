@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+
+PAGED LIST <br />
+호출할 페이지 : <input id="input_callpage" onchange="list_user()"/> <br />
+페이지 당 글 갯수 : <input id="input_perpage" onchange="listener_changed()"/> <br />
+아이디 검색 : <input id="input_username" onchange="listener_changed()"/> <br />
+이름 검색 : <input id="input_name" onchange="listener_changed()"/> <br />
+정렬 기준 :
+<select id="input_orderby" onchange="listener_changed()">
+    <option value="id">등록순</option>
+    <option value="name">이름순</option>
+</select><br />
+정렬 방향 :
+<select id="input_orderway" onchange="listener_changed()">
+    <option value="DESC">역순</option>
+    <option value="ASC">정순</option>
+</select><br />
+<!--<button onclick="list_user()">페이지 호출</button>-->
+<br />
+<div id="div_list"></div>
+<div id="div_paging"></div>
+
+<script>
+    list_user();
+    function list_user(){
+        $.ajax({
+            url: '/api/user/pagedList',
+            method: 'GET',
+            data : {
+                callpage : $("#input_callpage").val()
+                , perpage : $("#input_perpage").val()
+                , orderby : $("#input_orderby").val()
+                , orderway : $("#input_orderway").val()
+                , username : $("#input_username").val()
+                , name : $("#input_name").val()
+            },
+            success: function (data, status, xhr) {
+                //alert("success : " + JSON.stringify(data));
+                $("#div_list").html("");
+
+                let tempList = data["list"];
+                for(let each of tempList){
+                    $("#div_list").append(
+                        `<div onclick="location.href = '/user/detail/${each["id"]}'">${each["id"]} : ${each["username"]}, ${each["name"]}</div>`
+                    );
+                }
+
+                let callpage = Number(data["callpage"]);
+                let totalpage = Number(data["totalpage"]);
+
+                $("#div_paging").html("");
+                $("#div_paging").append(
+                    `<a href="javascript:listener_paging('1')">처음으로</a>`
+                );
+
+                for(let i=0;i<3;i++){
+                    let temp_page = callpage + i - 3; // 1 2 3
+                    if(temp_page > 0){
+                        $("#div_paging").append(
+                            `<a href="javascript:listener_paging('${temp_page}')">${temp_page}</a>`
+                        );
+                    }
+                }
+
+                $("#div_paging").append(
+                    `<a href="javascript:listener_paging('${callpage}')" style="color:#3d3d3d;">${callpage}</a>`
+                );
+
+                for(let i=0;i<3;i++){
+                    let temp_page = callpage + i + 1; // 5 6 7
+                    if(temp_page <= totalpage){
+                        $("#div_paging").append(
+                            `<a href="javascript:listener_paging('${temp_page}')">${temp_page}</a>`
+                        );
+                    }
+                }
+
+                $("#div_paging").append(
+                    `<a href="javascript:listener_paging('${totalpage}')">마지막으로</a>`
+                );
+
+
+                $("#input_callpage").val(callpage);
+                $("#input_perpage").val(data["perpage"]);
+
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+    }
+    function listener_paging(obj_page){
+        $("#input_callpage").val(obj_page);
+        list_user();
+    }
+    function listener_changed(){
+        listener_paging(1);
+    }
+</script>
+</body>
+</html>
