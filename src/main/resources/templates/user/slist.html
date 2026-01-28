@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+
+SCROLLED LIST <br />
+페이지 당 글 갯수 : <input id="input_perpage" onchange="listener_changed()"/> <br />
+아이디 검색 : <input id="input_username" onchange="listener_changed()"/> <br />
+이름 검색 : <input id="input_name" onchange="listener_changed()"/> <br />
+정렬 기준 :
+<select id="input_orderby" onchange="listener_changed()">
+    <option value="id">등록순</option>
+    <option value="name">이름순</option>
+</select><br />
+정렬 방향 :
+<select id="input_orderway" onchange="listener_changed()">
+    <option value="DESC">역순</option>
+    <option value="ASC">정순</option>
+</select><br />
+<button onclick="list_user()">더보기!</button>
+<br />
+<div id="div_list"></div>
+
+<script>
+    list_user();
+    function list_user(){
+
+        let cursor = null;
+        let input_user_id = $(".input_user_id");
+        if(input_user_id.length > 0){
+            cursor = $(input_user_id[input_user_id.length - 1]).val();
+        }
+
+        $.ajax({
+            url: '/api/user/scrolledList',
+            method: 'GET',
+            data : {
+                perpage : $("#input_perpage").val()
+                , orderby : $("#input_orderby").val()
+                , orderway : $("#input_orderway").val()
+                , username : $("#input_username").val()
+                , name : $("#input_name").val()
+                , cursor : cursor
+            },
+            success: function (data, status, xhr) {
+                //alert("success : " + JSON.stringify(data));
+                //$("#div_list").html("");
+
+                let tempList = data;
+                for(let each of tempList){
+                    $("#div_list").append(
+                        `<div onclick="location.href = '/user/detail/${each["id"]}'">${each["id"]} : ${each["username"]}, ${each["name"]}<input class="input_user_id" value="${each["id"]}"/></div>`
+                    );
+                }
+
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+    }
+    function listener_changed(){
+        $("#div_list").html("");
+        list_user();
+    }
+</script>
+</body>
+</html>

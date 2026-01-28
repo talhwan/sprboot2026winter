@@ -47,5 +47,9 @@ public class UserRestController {
     public ResponseEntity<UserDto.PagedListResDto> pagedList(UserDto.PagedListReqDto param) {
         return ResponseEntity.ok(userService.pagedList(param));
     }
+    @GetMapping("/scrolledList")
+    public ResponseEntity<List<UserDto.DetailResDto>> scrolledList(UserDto.ScrolledListReqDto param) {
+        return ResponseEntity.ok(userService.scrolledList(param));
+    }
 
 }

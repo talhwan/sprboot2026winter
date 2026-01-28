@@ -37,6 +37,9 @@
     <select id="listCount" parameterType="hashMap" resultType="Integer">
         SELECT count(user.id) as listCount
         FROM user
+        WHERE user.id is not null
+        <if test = "username != null and username !=''">AND user.username = #{username}</if>
+        <if test = "name != null and name !=''">AND user.name LIKE CONCAT('%', #{name}, '%')</if>
     </select>
 
     <select id="pagedList" parameterType="hashMap" resultType="com.example.demo.dto.UserDto$DetailResDto">
@@ -61,5 +64,53 @@
         <if test = "orderway != null and orderway =='ASC'"> ASC</if>
         LIMIT #{offset}, #{perpage}
     </select>
-    <!---->
+
+    <select id="scrolledList" parameterType="hashMap" resultType="com.example.demo.dto.UserDto$DetailResDto">
+        SELECT user.id
+        , user.deleted
+        , user.created_at as createdAt
+        , user.modified_at as modifiedAt
+
+        , user.username
+        , user.name
+        , user.nickname
+        , user.phone
+        , user.birth
+        , user.gender
+        FROM user
+        WHERE user.id is not null
+        <if test = "username != null and username !=''">AND user.username = #{username}</if>
+        <if test = "name != null and name !=''">AND user.name LIKE CONCAT('%', #{name}, '%')</if>
+
+        <if test = "orderway != null and orderway =='DESC'">
+            <if test = "orderby != null and orderby =='id'">
+                <if test = "cursor != null">
+                AND #{cursor} > user.id
+                </if>
+                ORDER BY user.id DESC
+            </if>
+            <if test = "orderby != null and orderby =='name'">
+                <if test = "cursorsearch != null">
+                    AND #{cursorsearch} > CONCAT(user.name, '_', user.id)
+                </if>
+                ORDER BY CONCAT(user.name, '_', user.id) DESC
+            </if>
+        </if>
+        <if test = "orderway != null and orderway =='ASC'">
+            <if test = "orderby != null and orderby =='id'">
+                <if test = "cursor != null">
+                AND user.id > #{cursor}
+                </if>
+                ORDER BY user.id ASC
+            </if>
+            <if test = "orderby != null and orderby =='name'">
+                <if test = "cursorsearch != null">
+                    AND CONCAT(user.name, '_', user.id) > #{cursorsearch}
+                </if>
+                ORDER BY CONCAT(user.name, '_', user.id) ASC
+            </if>
+        </if>
+        LIMIT 0, #{perpage}
+    </select>
+    <!--<if test = "cursor != null and cursor !=''">AND #{cursor} > user.id</if>-->
 </mapper>

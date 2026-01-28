@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto.PagedListResDto pagedList(UserDto.PagedListReqDto param) {
-        int totalcount = userMapper.listCount();
+        int totalcount = userMapper.listCount(param);
         Integer perpage = param.getPerpage();
         if(perpage == null || perpage <= 0){
             perpage = 10;
@@ -167,5 +167,30 @@ public class UserServiceImpl implements UserService {
                 .totalcount(totalcount)
                 .list(list)
                 .build();
+    }
+
+    @Override
+    public List<UserDto.DetailResDto> scrolledList(UserDto.ScrolledListReqDto param) {
+        Integer perpage = param.getPerpage();
+        if(perpage == null || perpage <= 0){
+            perpage = 10;
+        }
+        param.setPerpage(perpage);
+        if(param.getOrderby() == null || param.getOrderby().isEmpty()){
+            param.setOrderby("id");
+        }
+        if(param.getOrderway() == null || param.getOrderway().isEmpty()){
+            param.setOrderway("DESC");
+        }
+        System.out.println(param.getOrderby());
+        System.out.println(param.getOrderway());
+
+        if(param.getCursor() != null && "name".equals(param.getOrderby())){
+            Long id = param.getCursor();
+            User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("no data"));
+            param.setCursorsearch(user.getName() + "_" + id);
+        }
+        List<UserDto.DetailResDto> list = userMapper.scrolledList(param);
+        return list;
     }
 }

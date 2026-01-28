@@ -72,4 +72,17 @@ public class UserDto {
         Integer totalcount; // 총 글 갯수
         List<UserDto.DetailResDto> list; // 실제 글 목록
     }
+
+
+    @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
+    public static class ScrolledListReqDto {
+        Integer perpage; // 한번에 볼 페이지 수
+        String orderby; //정렬기준
+        String orderway; //정렬방향
+        Long cursor;
+        String cursorsearch;
+
+        String username;
+        String name;
+    }
 }

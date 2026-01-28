@@ -7,6 +7,7 @@ public interface UserMapper {
     //조회 하는데 사용될 다오!
     UserDto.DetailResDto detail(Long id);
     List<UserDto.DetailResDto> list();
-    int listCount();
+    int listCount(UserDto.PagedListReqDto param);
     List<UserDto.DetailResDto> pagedList(UserDto.PagedListReqDto param);
+    List<UserDto.DetailResDto> scrolledList(UserDto.ScrolledListReqDto param);
 }
