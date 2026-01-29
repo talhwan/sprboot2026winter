@@ -1,31 +1,37 @@
 package com.example.demo.controller;
 
 import com.example.demo.ParamTest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@RequestMapping("/api")
+@RequestMapping("/api/default")
 @RestController
 public class DefaultRestController {
 
-    @RequestMapping("/test")
-    public Map<String, Object> test(@RequestParam Map<String, Object> params) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("test1", params.get("a"));
-        map.put("test2", 112233);
-        return map;
-    }
+    @PostMapping("/file")
+    public ResponseEntity<String> file(MultipartFile file) {
+        System.out.println("filename : " + file.getOriginalFilename());
+        String path = "/Users/a01/workspace/uploadfile/demo/";
+        String fileName = file.getOriginalFilename();
+        Date date = new Date();
+        String tempTime = date.getTime() + "";
+        String finalFileName = null;
 
-    @RequestMapping("/test2")
-    public Map<String, Object> test2(ParamTest params) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("param1", params.getParam1());
-        map.put("param2", params.getParam2());
-        return map;
-    }
+        try{
+            finalFileName = tempTime + "_" + fileName;
+            FileCopyUtils.copy(file.getBytes(), new File(path + finalFileName));
+        } catch(Exception e) {}
 
+        return ResponseEntity.ok(finalFileName);
+    }
 }

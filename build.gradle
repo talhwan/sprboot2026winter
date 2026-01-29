@@ -37,6 +37,9 @@ dependencies {
     /* mybatis */
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' //3.0.2 => 3.0.3으로 상승!!
 
+    /* file upload */
+    implementation group: 'commons-io', name: 'commons-io', version: '2.13.0'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

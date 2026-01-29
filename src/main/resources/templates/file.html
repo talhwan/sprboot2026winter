@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>파일 업로드!!</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+<body>
+
+<input type="file" id="input_file" />
+<input type="text" id="input_filename" />
+<img id="img_file" src="" style="max-width: 300px;"/>
+<button onclick="upload_file()">파일 업로드</button>
+<button onclick="download_file()">파일 다운로드</button>
+
+<script>
+
+    function download_file(){
+        location.href = "/download/" + $("#input_filename").val();
+    }
+    function upload_file(){
+
+        let tempFile = null;
+        let inputFile = document.getElementById("input_file"); //인풋 태크에 접근
+        if (inputFile.files.length > 0) { //파일 담겼는지 확인
+            tempFile = inputFile.files[0];
+        } else {
+            alert("please input file first");
+            return false;
+        }
+
+        // FormData 준비
+        let formData = new FormData();
+        formData.append('file', tempFile);
+
+        $.ajax({
+            url: "/api/default/file",
+            type: "POST",
+            data: formData,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success: (data, status, xhr)=>{
+                //alert(JSON.stringify(data));
+                let file_src = data;
+                $("#img_file").attr("src", "/image/" + file_src);
+                $("#input_filename").val(file_src);
+            },
+            error: (data)=>{
+                alert("error")
+            },
+        });
+
+    }
+</script>
+</body>
+</html>
