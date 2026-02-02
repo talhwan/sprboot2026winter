@@ -54,34 +54,12 @@ public class UserDto {
     }
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
-    public static class PagedListReqDto {
-        Integer callpage; //호출할 페이지
-        Integer perpage; // 한번에 볼 페이지 수
-        Integer offset; // 실제 조회할 글 순번
-        String orderby; //정렬기준
-        String orderway; //정렬방향
-
+    public static class PagedListReqDto extends DefaultDto.PagedListReqDto {
         String username;
         String name;
     }
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
-    public static class PagedListResDto {
-        Integer callpage; //호출한 페이지
-        Integer perpage; // 한번에 본 페이지 수
-        Integer totalpage; // 총 페이지 갯수
-        Integer totalcount; // 총 글 갯수
-        List<UserDto.DetailResDto> list; // 실제 글 목록
-    }
-
-
-    @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
-    public static class ScrolledListReqDto {
-        Integer perpage; // 한번에 볼 페이지 수
-        String orderby; //정렬기준
-        String orderway; //정렬방향
-        Long cursor;
-        String cursorsearch;
-
+    public static class ScrolledListReqDto extends DefaultDto.ScrolledListReqDto {
         String username;
         String name;
     }

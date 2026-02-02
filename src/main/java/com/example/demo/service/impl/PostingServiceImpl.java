@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.domain.Posting;
 import com.example.demo.dto.DefaultDto;
 import com.example.demo.dto.PostingDto;
+import com.example.demo.mapper.PostingMapper;
 import com.example.demo.repository.PostingRepository;
 import com.example.demo.service.PostingService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,9 @@ import java.util.List;
 public class PostingServiceImpl implements PostingService {
 
     final PostingRepository postingRepository;
+    final PostingMapper postingMapper;
+
+    /**/
 
     @Override
     public DefaultDto.CreateResDto create(PostingDto.CreateReqDto param) {
@@ -23,46 +27,57 @@ public class PostingServiceImpl implements PostingService {
     }
     @Override
     public void update(PostingDto.UpdateReqDto param) {
-        Long id = param.getId();
-        Posting posting = postingRepository.findById(id).orElseThrow(() -> new RuntimeException("no data"));
+        Posting posting = postingRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException("no data"));
         posting.update(param);
         postingRepository.save(posting);
     }
+
     @Override
     public void delete(PostingDto.UpdateReqDto param) {
-        // 완전 삭제!
-        /*Long id = param.getId();
-        Posting posting = postingRepository.findById(id).orElseThrow(() -> new RuntimeException("no data"));
-        postingRepository.delete(posting);*/
-        // soft delete
         update(PostingDto.UpdateReqDto.builder().id(param.getId()).deleted(true).build());
     }
 
-    public PostingDto.DetailResDto toResDto(Posting posting) {
-        PostingDto.DetailResDto res = new PostingDto.DetailResDto();
-        res.setId(posting.getId());
-        res.setDeleted(posting.getDeleted());
-        res.setTitle(posting.getTitle());
-        res.setContent(posting.getContent());
-        res.setAuthor(posting.getAuthor());
-        res.setCreatedAt(posting.getCreatedAt());
-        res.setModifiedAt(posting.getModifiedAt());
+    public PostingDto.DetailResDto get(Long id) {
+        PostingDto.DetailResDto res = postingMapper.detail(id);
+        //~~~연산 추가 가능성 있음!?
         return res;
     }
 
     @Override
     public PostingDto.DetailResDto detail(DefaultDto.DetailReqDto param) {
-        Posting posting = postingRepository.findById(param.getId()).orElseThrow(() -> new RuntimeException("no data"));
-        return toResDto(posting);
+        return get(param.getId());
     }
+
+    public List<PostingDto.DetailResDto> detailList(List<PostingDto.DetailResDto> list) {
+        List<PostingDto.DetailResDto> newList = new ArrayList<>();
+        for(PostingDto.DetailResDto each : list){
+            newList.add(get(each.getId()));
+        }
+        return newList;
+    }
+
     @Override
     public List<PostingDto.DetailResDto> list() {
-        List<Posting> list = postingRepository.findAll();
-        List<PostingDto.DetailResDto> returnList = new ArrayList<>();
-        for(Posting each : list) {
-            PostingDto.DetailResDto res = toResDto(each);
-            returnList.add(res);
+        List<PostingDto.DetailResDto> res = postingMapper.list();
+        return detailList(res);
+    }
+
+    @Override
+    public DefaultDto.PagedListResDto pagedList(PostingDto.PagedListReqDto param) {
+        DefaultDto.PagedListResDto res = param.init(postingMapper.listCount(param));
+        res.setList(detailList(postingMapper.pagedList(param)));
+        return res;
+    }
+
+    @Override
+    public List<PostingDto.DetailResDto> scrolledList(PostingDto.ScrolledListReqDto param) {
+        param.init();
+        if(param.getCursor() != null && "title".equals(param.getOrderby())){
+            Long id = param.getCursor();
+            Posting posting = postingRepository.findById(id).orElseThrow(() -> new RuntimeException("no data"));
+            param.setCursorsearch(posting.getTitle() + "_" + id);
         }
-        return returnList;
+        List<PostingDto.DetailResDto> list = postingMapper.scrolledList(param);
+        return detailList(list);
     }
 }

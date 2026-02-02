@@ -88,24 +88,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDto.DetailResDto get(Long id) {
-        /*
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("no data"));
-        return UserDto.DetailResDto.builder()
-                .id(user.getId())
-                .deleted(user.getDeleted())
-                .createdAt(user.getCreatedAt())
-                .modifiedAt(user.getModifiedAt())
-
-                .username(user.getUsername())
-                .name(user.getName())
-                .nickname(user.getNickname())
-                .phone(user.getPhone())
-                .birth(user.getBirth())
-                .gender(user.getGender())
-                .build();
-        */
-
         UserDto.DetailResDto res = userMapper.detail(id);
+        //~~~연산 추가 가능성 있음!?
         return res;
     }
 
@@ -114,83 +98,36 @@ public class UserServiceImpl implements UserService {
         return get(param.getId());
     }
 
+    public List<UserDto.DetailResDto> detailList(List<UserDto.DetailResDto> list) {
+        List<UserDto.DetailResDto> newList = new ArrayList<>();
+        for(UserDto.DetailResDto each : list){
+            newList.add(get(each.getId()));
+        }
+        return newList;
+    }
+
     @Override
     public List<UserDto.DetailResDto> list() {
-        /*List<User> users = userRepository.findAll();
-        List<UserDto.DetailResDto> res = new ArrayList<>();
-        for(User user : users) {
-            res.add(get(user.getId()));
-        }*/
-
         List<UserDto.DetailResDto> res = userMapper.list();
+        return detailList(res);
+    }
+
+    @Override
+    public DefaultDto.PagedListResDto pagedList(UserDto.PagedListReqDto param) {
+        DefaultDto.PagedListResDto res = param.init(userMapper.listCount(param));
+        res.setList(detailList(userMapper.pagedList(param)));
         return res;
     }
 
     @Override
-    public UserDto.PagedListResDto pagedList(UserDto.PagedListReqDto param) {
-        int totalcount = userMapper.listCount(param);
-        Integer perpage = param.getPerpage();
-        if(perpage == null || perpage <= 0){
-            perpage = 10;
-        }
-
-        int totalpage = totalcount / perpage;
-        if(totalcount % perpage > 0) {totalpage++;}
-
-        Integer callpage = param.getCallpage();
-        if(callpage == null || callpage <= 0){
-            callpage = 1;
-        }
-        if(callpage > totalpage){
-            callpage = totalpage;
-        }
-
-        int offset = (callpage - 1) * perpage;
-        param.setPerpage(perpage);
-        param.setOffset(offset);
-
-        if(param.getOrderby() == null || param.getOrderby().isEmpty()){
-            param.setOrderby("id");
-        }
-        if(param.getOrderway() == null || param.getOrderway().isEmpty()){
-            param.setOrderway("DESC");
-        }
-        System.out.println(param.getOrderby());
-        System.out.println(param.getOrderway());
-
-        List<UserDto.DetailResDto> list = userMapper.pagedList(param);
-
-        return UserDto.PagedListResDto.builder()
-                .callpage(callpage)
-                .perpage(perpage)
-                .totalpage(totalpage)
-                .totalcount(totalcount)
-                .list(list)
-                .build();
-    }
-
-    @Override
     public List<UserDto.DetailResDto> scrolledList(UserDto.ScrolledListReqDto param) {
-        Integer perpage = param.getPerpage();
-        if(perpage == null || perpage <= 0){
-            perpage = 10;
-        }
-        param.setPerpage(perpage);
-        if(param.getOrderby() == null || param.getOrderby().isEmpty()){
-            param.setOrderby("id");
-        }
-        if(param.getOrderway() == null || param.getOrderway().isEmpty()){
-            param.setOrderway("DESC");
-        }
-        System.out.println(param.getOrderby());
-        System.out.println(param.getOrderway());
-
+        param.init();
         if(param.getCursor() != null && "name".equals(param.getOrderby())){
             Long id = param.getCursor();
             User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("no data"));
             param.setCursorsearch(user.getName() + "_" + id);
         }
         List<UserDto.DetailResDto> list = userMapper.scrolledList(param);
-        return list;
+        return detailList(list);
     }
 }

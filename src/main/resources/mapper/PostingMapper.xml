@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.PostingMapper">
+
+	<!---->
+	<select id="detail" parameterType="hashMap" resultType="com.example.demo.dto.PostingDto$DetailResDto">
+		SELECT posting.id
+			 , posting.deleted
+			 , posting.created_at as createdAt
+			 , posting.modified_at as modifiedAt
+
+			 , posting.user_id as userId
+			 , posting.title
+			 , posting.content
+
+			 , user.username as userUsername
+			 , user.name as userName
+		FROM posting, user
+		WHERE posting.id = #{id}
+		  AND posting.user_id = user.id
+	</select>
+
+    <!-- 공통 WHERE 절 -->
+    <sql id="commonWhere">
+        WHERE posting.id is not null
+        <if test = "userId != null">AND posting.user_id = #{userId}</if>
+        <if test = "title != null and title !=''">AND posting.title LIKE CONCAT('%', #{title}, '%')</if>
+    </sql>
+
+    <select id="list" parameterType="hashMap" resultType="com.example.demo.dto.PostingDto$DetailResDto">
+        SELECT posting.id
+        FROM posting
+    </select>
+
+
+    <select id="listCount" parameterType="hashMap" resultType="Integer">
+        SELECT count(posting.id) as listCount
+        FROM posting
+        <include refid="commonWhere"/>
+    </select>
+
+    <select id="pagedList" parameterType="hashMap" resultType="com.example.demo.dto.PostingDto$DetailResDto">
+        SELECT posting.id
+        FROM posting
+        <include refid="commonWhere"/>
+        <if test = "orderby != null and orderby =='id'">ORDER BY posting.id </if>
+        <if test = "orderby != null and orderby =='name'">ORDER BY posting.name </if>
+        <if test = "orderway != null and orderway =='DESC'"> DESC</if>
+        <if test = "orderway != null and orderway =='ASC'"> ASC</if>
+        LIMIT #{offset}, #{perpage}
+    </select>
+
+    <select id="scrolledList" parameterType="hashMap" resultType="com.example.demo.dto.PostingDto$DetailResDto">
+        SELECT posting.id
+        FROM posting
+        <include refid="commonWhere"/>
+
+        <if test = "orderway != null and orderway =='DESC'">
+            <if test = "orderby != null and orderby =='id'">
+                <if test = "cursor != null">
+                AND #{cursor} > posting.id
+                </if>
+                ORDER BY posting.id DESC
+            </if>
+            <if test = "orderby != null and orderby =='title'">
+                <if test = "cursorsearch != null">
+                    AND #{cursorsearch} > CONCAT(posting.title, '_', posting.id)
+                </if>
+                ORDER BY CONCAT(posting.title, '_', posting.id) DESC
+            </if>
+        </if>
+        <if test = "orderway != null and orderway =='ASC'">
+            <if test = "orderby != null and orderby =='id'">
+                <if test = "cursor != null">
+                AND posting.id > #{cursor}
+                </if>
+                ORDER BY posting.id ASC
+            </if>
+            <if test = "orderby != null and orderby =='title'">
+                <if test = "cursorsearch != null">
+                    AND CONCAT(posting.title, '_', posting.id) > #{cursorsearch}
+                </if>
+                ORDER BY CONCAT(posting.title, '_', posting.id) ASC
+            </if>
+        </if>
+        LIMIT 0, #{perpage}
+    </select>
+</mapper>

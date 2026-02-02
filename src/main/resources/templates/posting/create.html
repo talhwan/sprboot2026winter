@@ -9,12 +9,21 @@
 POSTING CREATE <br />
 title : <input class="input_param" id="input_title" name="title" /> <br />
 content : <input class="input_param" id="input_content" name="content"/> <br />
-author : <input class="input_param" id="input_author" name="author" /> <br />
 <button onclick="create_posting()">CREATE</button>
 
 <script>
     function create_posting(){
-        let _param = {};
+
+        let myUserId = localStorage.getItem("myUserId");
+        if(myUserId == null || myUserId + "" === "" || myUserId + "" === "undefined"){
+            alert("로그인 먼저 해주세요!");
+            return false;
+        }
+
+        let _param = {
+            userId : myUserId
+        };
+        //_param["userId"] = myUserId;
         let input_param = $(".input_param");
         for(let each of input_param){
             let tempName = $(each).attr("name");
@@ -27,10 +36,10 @@ author : <input class="input_param" id="input_author" name="author" /> <br />
             contentType : 'application/json; charset=utf-8',
             data : JSON.stringify(_param),
             success: function (data, status, xhr) {
-                let result_status = data["status"];
                 alert("success : " + JSON.stringify(data));
             },
             error: function (data, status, err) {
+                alert("error?");
             },
             complete: function () {
 

@@ -18,18 +18,16 @@
 		FROM user
 		WHERE user.id = #{id}
 	</select>
+
+    <!-- 공통 WHERE 절 -->
+    <sql id="commonWhere">
+        WHERE user.id is not null
+        <if test = "username != null and username !=''">AND user.username = #{username}</if>
+        <if test = "name != null and name !=''">AND user.name LIKE CONCAT('%', #{name}, '%')</if>
+    </sql>
+
     <select id="list" parameterType="hashMap" resultType="com.example.demo.dto.UserDto$DetailResDto">
         SELECT user.id
-             , user.deleted
-             , user.created_at as createdAt
-             , user.modified_at as modifiedAt
-
-             , user.username
-             , user.name
-             , user.nickname
-             , user.phone
-             , user.birth
-             , user.gender
         FROM user
     </select>
 
@@ -37,27 +35,13 @@
     <select id="listCount" parameterType="hashMap" resultType="Integer">
         SELECT count(user.id) as listCount
         FROM user
-        WHERE user.id is not null
-        <if test = "username != null and username !=''">AND user.username = #{username}</if>
-        <if test = "name != null and name !=''">AND user.name LIKE CONCAT('%', #{name}, '%')</if>
+        <include refid="commonWhere"/>
     </select>
 
     <select id="pagedList" parameterType="hashMap" resultType="com.example.demo.dto.UserDto$DetailResDto">
         SELECT user.id
-             , user.deleted
-             , user.created_at as createdAt
-             , user.modified_at as modifiedAt
-
-             , user.username
-             , user.name
-             , user.nickname
-             , user.phone
-             , user.birth
-             , user.gender
         FROM user
-        WHERE user.id is not null
-        <if test = "username != null and username !=''">AND user.username = #{username}</if>
-        <if test = "name != null and name !=''">AND user.name LIKE CONCAT('%', #{name}, '%')</if>
+        <include refid="commonWhere"/>
         <if test = "orderby != null and orderby =='id'">ORDER BY user.id </if>
         <if test = "orderby != null and orderby =='name'">ORDER BY user.name </if>
         <if test = "orderway != null and orderway =='DESC'"> DESC</if>
@@ -67,20 +51,8 @@
 
     <select id="scrolledList" parameterType="hashMap" resultType="com.example.demo.dto.UserDto$DetailResDto">
         SELECT user.id
-        , user.deleted
-        , user.created_at as createdAt
-        , user.modified_at as modifiedAt
-
-        , user.username
-        , user.name
-        , user.nickname
-        , user.phone
-        , user.birth
-        , user.gender
         FROM user
-        WHERE user.id is not null
-        <if test = "username != null and username !=''">AND user.username = #{username}</if>
-        <if test = "name != null and name !=''">AND user.name LIKE CONCAT('%', #{name}, '%')</if>
+        <include refid="commonWhere"/>
 
         <if test = "orderway != null and orderway =='DESC'">
             <if test = "orderby != null and orderby =='id'">
@@ -112,5 +84,4 @@
         </if>
         LIMIT 0, #{perpage}
     </select>
-    <!--<if test = "cursor != null and cursor !=''">AND #{cursor} > user.id</if>-->
 </mapper>
