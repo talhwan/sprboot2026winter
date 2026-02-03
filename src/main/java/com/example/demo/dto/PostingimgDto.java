@@ -1,66 +1,51 @@
 package com.example.demo.dto;
 
-import com.example.demo.domain.Posting;
+import com.example.demo.domain.Postingimg;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
-public class PostingDto {
+public class PostingimgDto {
 
     /**/
 
     @Getter
     @Setter
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class CreateReqDto {
-        Long userId;
-        String title;
-        String content;
+        Long postingId;
         String img;
 
-        List<String> imgs;
-
-        public Posting toEntity() {
-            return Posting.of(userId, title, content, img);
+        public Postingimg toEntity() {
+            return Postingimg.of(postingId, img);
         }
     }
     @Getter @Setter @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateReqDto extends DefaultDto.UpdateReqDto {
-        String title;
-        String content;
         String img;
     }
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class DetailResDto extends DefaultDto.DetailResDto {
-        Long userId;
-        String title;
-        String content;
+        Long postingId;
         String img;
-
-        List<PostingimgDto.DetailResDto> imgs;
-
-        String userUsername;
-        String userName;
     }
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class ListReqDto extends DefaultDto.ListReqDto {
-        Long userId;
-        String title;
+        Long postingId;
     }
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class PagedListReqDto extends DefaultDto.PagedListReqDto {
-        Long userId;
-        String title;
+        Long postingId;
     }
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class ScrolledListReqDto extends DefaultDto.ScrolledListReqDto {
-        Long userId;
-        String title;
+        Long postingId;
     }
 }

@@ -30,12 +30,31 @@ public class DefaultDto {
     }
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
+    public static class ListReqDto {
+        String orderby; //정렬기준
+        String orderway; //정렬방향
+
+        Boolean deleted;
+
+        public void init(){
+            if(getOrderby() == null || getOrderby().isEmpty()){
+                setOrderby("id");
+            }
+            if(getOrderway() == null || getOrderway().isEmpty()){
+                setOrderway("DESC");
+            }
+        }
+    }
+
+    @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class PagedListReqDto {
         Integer callpage; //호출할 페이지
         Integer perpage; // 한번에 볼 페이지 수
         Integer offset; // 실제 조회할 글 순번
         String orderby; //정렬기준
         String orderway; //정렬방향
+
+        Boolean deleted;
 
         public DefaultDto.PagedListResDto init(int totalcount){
             Integer perpage = getPerpage();
@@ -87,6 +106,8 @@ public class DefaultDto {
         String orderway; //정렬방향
         Long cursor;
         String cursorsearch;
+
+        Boolean deleted;
 
         public void init(){
             Integer perpage = getPerpage();

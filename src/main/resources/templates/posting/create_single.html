@@ -13,38 +13,36 @@ content : <input class="input_param" id="input_content" name="content"/> <br />
 <img id="img_file" src="" style="max-width: 300px;"/>-->
 image :
 <div id="div_imgs"></div>
-<input type="file" id="input_file" accept="image/*" multiple/> <br/>
-<button onclick="upload_files()">이미지 파일 업로드</button>
+<input type="file" id="input_file" accept="image/*"/> <br/>
+<button onclick="upload_file()">이미지 파일 업로드</button>
 <button onclick="create_posting()">CREATE</button>
 
 
 <script>
-    function upload_files(){
-        let tempFiles = null;
+    function upload_file(){
+        let tempFile = null;
         let inputFile = document.getElementById("input_file"); //인풋 태크에 접근
         if (inputFile.files.length > 0) { //파일 담겼는지 확인
-            tempFiles = inputFile.files;
+            tempFile = inputFile.files[0];
         } else {
             alert("please input file first");
             return false;
         }
         // FormData 준비
         let formData = new FormData();
-        for(let each of tempFiles){
-            formData.append('files', each);
-        }
+        formData.append('file', tempFile);
         $.ajax({
-            url: "/api/default/files",
+            url: "/api/default/file",
             type: "POST",
             data: formData,
             cache : false,
             contentType : false,
             processData : false,
             success: (data, status, xhr)=>{
-                let file_srcs = data;
-                for(let file_src of file_srcs){
-                    $("#div_imgs").append(`<img class="input_img" src="/image/${file_src}" style="max-width: 200px" data-target="${file_src}"/>`);
-                }
+                let file_src = data;
+                $("#div_imgs").append(`<img class="input_img" src="/image/${file_src}" style="max-width: 200px" data-target="${file_src}"/>`);
+                /*$("#img_file").attr("src", "/image/" + file_src);
+                $("#input_img").val(file_src);*/
             },
             error: (data)=>{
                 alert("error")

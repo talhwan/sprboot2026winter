@@ -13,16 +13,18 @@ public class Posting extends AuditingFields {
     @Column(nullable = false) Long userId;
     @Column(nullable = false) String title;
     String content;
+    String img;
 
     protected  Posting() {}
-    private Posting(Boolean deleted, Long userId, String title, String content) {
+    private Posting(Boolean deleted, Long userId, String title, String content, String img) {
         this.deleted = deleted;
         this.userId = userId;
         this.title = title;
         this.content = content;
+        this.img = img;
     }
-    public static Posting of(Long userId, String title, String content) {
-        return new Posting(false, userId, title, content);
+    public static Posting of(Long userId, String title, String content, String img) {
+        return new Posting(false, userId, title, content, img);
     }
     public DefaultDto.CreateResDto toCreateResDto() {
         return DefaultDto.CreateResDto.builder().id(getId()).build();
@@ -31,5 +33,6 @@ public class Posting extends AuditingFields {
         if(param.getDeleted() != null) { setDeleted(param.getDeleted()); }
         if(param.getTitle() != null) { setTitle(param.getTitle()); }
         if(param.getContent() != null) { setContent(param.getContent()); }
+        if(param.getImg() != null) { setImg(param.getImg()); }
     }
 }

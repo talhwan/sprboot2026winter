@@ -12,6 +12,7 @@
 			 , posting.user_id as userId
 			 , posting.title
 			 , posting.content
+			 , posting.img
 
 			 , user.username as userUsername
 			 , user.name as userName
@@ -23,6 +24,7 @@
     <!-- 공통 WHERE 절 -->
     <sql id="commonWhere">
         WHERE posting.id is not null
+        <if test = "deleted != null">AND postingimg.deleted = #{deleted}</if>
         <if test = "userId != null">AND posting.user_id = #{userId}</if>
         <if test = "title != null and title !=''">AND posting.title LIKE CONCAT('%', #{title}, '%')</if>
     </sql>
@@ -30,6 +32,11 @@
     <select id="list" parameterType="hashMap" resultType="com.example.demo.dto.PostingDto$DetailResDto">
         SELECT posting.id
         FROM posting
+        <include refid="commonWhere"/>
+        <if test = "orderby != null and orderby =='id'">ORDER BY posting.id </if>
+        <if test = "orderby != null and orderby =='name'">ORDER BY posting.name </if>
+        <if test = "orderway != null and orderway =='DESC'"> DESC</if>
+        <if test = "orderway != null and orderway =='ASC'"> ASC</if>
     </select>
 
 

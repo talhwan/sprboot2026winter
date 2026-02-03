@@ -12,6 +12,13 @@ id : <input class="input_param" id="input_id" name="id" readonly /> <br />
 createdAt : <input class="input_param" id="input_createdAt" name="createdAt" readonly /> <br />
 title : <input class="input_param" id="input_title" name="title" /> <br />
 content : <input class="input_param" id="input_content" name="content"/> <br />
+img : <input class="input_param" id="input_img" name="img"/> <br />
+imgs :
+<div id="div_imgs"></div>
+
+<input type="file" id="input_file" accept="image/*"/> <br/>
+<button onclick="upload_file()">이미지 파일 업로드</button>
+<br />
 userId : <input class="input_param" id="input_userId" name="userId" readonly /> <br />
 userUsername : <input class="input_param" id="input_userUsername" name="userUsername" readonly /> <br />
 <button onclick="detail_posting()">DETAIL</button>
@@ -37,13 +44,18 @@ userUsername : <input class="input_param" id="input_userUsername" name="userUser
             },
             success: function (data, status, xhr) {
                 //let result_status = data["status"];
-                alert("success : " + JSON.stringify(data));
+                //alert("success : " + JSON.stringify(data));
                 let posting = data;
 
                 let input_param = $(".input_param");
                 for(let each of input_param){
                     let tempName = $(each).attr("name");
                     $(each).val(posting[tempName]);
+                }
+
+                let imgs = posting["imgs"];
+                for(let each of imgs){
+                    listener_append_img(each);
                 }
 
             },
@@ -53,6 +65,10 @@ userUsername : <input class="input_param" id="input_userUsername" name="userUser
 
             }
         });
+    }
+    function listener_append_img(each) {
+        $("#div_imgs").append(`<div class="div_imgs_id_${each["id"]}"><img src="/image/${each["img"]}" style="max-width: 100px;"/><button onclick="listener_remove('${each["id"]}')">삭제</button></div>`);
+
     }
     function delete_posting(){
         $.ajax({
@@ -93,6 +109,85 @@ userUsername : <input class="input_param" id="input_userUsername" name="userUser
                 alert("success : " + JSON.stringify(data));
             },
             error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+    }
+    function listener_remove(obj_id){
+        if(!confirm("정말 삭제하시겠습니까?")){
+            return false;
+        }
+        delete_postingimg(obj_id);
+    }
+    function delete_postingimg(obj_id){
+        $.ajax({
+            url: '/api/postingimg',
+            method: 'DELETE',
+            contentType : 'application/json; charset=utf-8',
+            data : JSON.stringify({
+                id : obj_id
+            }),
+            success: function (data, status, xhr) {
+                $(".div_imgs_id_" + obj_id).remove();
+            },
+            error: function (data, status, err) {
+            },
+            complete: function () {
+
+            }
+        });
+    }
+
+    function upload_file(){
+        let tempFile = null;
+        let inputFile = document.getElementById("input_file"); //인풋 태크에 접근
+        if (inputFile.files.length > 0) { //파일 담겼는지 확인
+            tempFile = inputFile.files[0];
+        } else {
+            alert("please input file first");
+            return false;
+        }
+        // FormData 준비
+        let formData = new FormData();
+        formData.append('file', tempFile);
+        $.ajax({
+            url: "/api/default/file",
+            type: "POST",
+            data: formData,
+            cache : false,
+            contentType : false,
+            processData : false,
+            success: (data, status, xhr)=>{
+                let file_src = data;
+                create_postingimg(file_src);
+            },
+            error: (data)=>{
+                alert("error")
+            },
+        });
+
+    }
+    function create_postingimg(obj_src){
+        let _param = {
+            postingId : $("#input_id").val()
+            , img : obj_src
+        };
+        $.ajax({
+            url: '/api/postingimg',
+            method: 'POST',
+            contentType : 'application/json; charset=utf-8',
+            data : JSON.stringify(_param),
+            success: function (data, status, xhr) {
+                let each = {
+                    id : data["id"]
+                    , img : obj_src
+                }
+                listener_append_img(each);
+            },
+            error: function (data, status, err) {
+                alert("error?");
             },
             complete: function () {
 

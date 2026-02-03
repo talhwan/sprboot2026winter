@@ -37,7 +37,7 @@ public class PostingRestController {
         return ResponseEntity.ok(postingService.detail(param));
     }
     @GetMapping("/list")
-    public ResponseEntity<List<PostingDto.DetailResDto>> list() {
-        return ResponseEntity.ok(postingService.list());
+    public ResponseEntity<List<PostingDto.DetailResDto>> list(PostingDto.ListReqDto param) {
+        return ResponseEntity.ok(postingService.list(param));
     }
 }

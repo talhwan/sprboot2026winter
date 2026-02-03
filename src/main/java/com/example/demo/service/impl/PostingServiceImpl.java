@@ -3,9 +3,11 @@ package com.example.demo.service.impl;
 import com.example.demo.domain.Posting;
 import com.example.demo.dto.DefaultDto;
 import com.example.demo.dto.PostingDto;
+import com.example.demo.dto.PostingimgDto;
 import com.example.demo.mapper.PostingMapper;
 import com.example.demo.repository.PostingRepository;
 import com.example.demo.service.PostingService;
+import com.example.demo.service.PostingimgService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +20,22 @@ public class PostingServiceImpl implements PostingService {
 
     final PostingRepository postingRepository;
     final PostingMapper postingMapper;
+    final PostingimgService postingimgService;
 
     /**/
 
     @Override
     public DefaultDto.CreateResDto create(PostingDto.CreateReqDto param) {
-        return postingRepository.save(param.toEntity()).toCreateResDto();
+        List<String> imgs = param.getImgs();
+        if(imgs != null && !imgs.isEmpty()) {
+            param.setImg(imgs.get(0));
+        }
+        DefaultDto.CreateResDto res = postingRepository.save(param.toEntity()).toCreateResDto();
+        for(String img : imgs){
+            // 저장해줘야 함!
+            postingimgService.create(PostingimgDto.CreateReqDto.builder().postingId(res.getId()).img(img).build());
+        }
+        return res;
     }
     @Override
     public void update(PostingDto.UpdateReqDto param) {
@@ -39,7 +51,10 @@ public class PostingServiceImpl implements PostingService {
 
     public PostingDto.DetailResDto get(Long id) {
         PostingDto.DetailResDto res = postingMapper.detail(id);
-        //~~~연산 추가 가능성 있음!?
+        //
+        List<PostingimgDto.DetailResDto> imgs = postingimgService.list(PostingimgDto.ListReqDto.builder().deleted(false).postingId(res.getId()).build());
+        res.setImgs(imgs);
+
         return res;
     }
 
@@ -57,8 +72,9 @@ public class PostingServiceImpl implements PostingService {
     }
 
     @Override
-    public List<PostingDto.DetailResDto> list() {
-        List<PostingDto.DetailResDto> res = postingMapper.list();
+    public List<PostingDto.DetailResDto> list(PostingDto.ListReqDto param) {
+        param.init();
+        List<PostingDto.DetailResDto> res = postingMapper.list(param);
         return detailList(res);
     }
 
